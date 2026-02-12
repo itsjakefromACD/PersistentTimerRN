@@ -10,18 +10,32 @@ The timer is designed to survive:
 
 - **Backgrounding** — When you leave the app (home button, app switch, or lock screen), the timer continues to count based on elapsed time.
 - **Relaunch** — When you open the app again, the timer shows the correct remaining or elapsed time instead of resetting.
+- **Force quit** — Even if the user force quits the app, the start time is persisted and the timer resumes correctly on next launch.
 
-Time state is persisted so that the app can compute the current value from the stored start time (or remaining duration) and the current time, even after the process was suspended or killed.
+Time state is persisted via **Secure Store** (encrypted on-device storage) so that the app can compute the current value from the stored start time and the current time, even after the process was suspended or killed.
 
 ## Timer API
 
-The timer logic lives in two places: a **utility module** with pure functions, and a **React hook** that wires everything up for you.
+The timer logic lives in three layers: a **storage utility** (Secure Store), a **timer utility** with pure functions, and a **React hook** that wires everything up for you.
+
+---
+
+### Storage utility (`utils/storage.js`)
+
+A thin wrapper around **expo-secure-store** that provides key/value persistence. Secure Store writes to encrypted on-device storage, so data survives app restarts, force quits, and reboots. The timer uses this instead of AsyncStorage for reliability.
+
+| Method           | Purpose                                         |
+| ---------------- | ----------------------------------------------- |
+| `setValue(k, v)` | Store a string value under a key                |
+| `getValue(k)`    | Retrieve a value (returns `null` if missing)    |
+| `removeValue(k)` | Delete a stored value                           |
+| `keys`           | Object of known keys (e.g. `keys.startTime`)    |
 
 ---
 
 ### Timer utility (`utils/timer.js`)
 
-Low-level functions for storing, reading, and formatting elapsed time. No React — use these directly if you're building your own UI or integrating into a different framework.
+Low-level functions for storing, reading, and formatting elapsed time. Uses the storage utility to persist the start time. No React — use these directly if you're building your own UI or integrating into a different framework.
 
 | Function                       | What it does                                                                                                          |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
@@ -91,10 +105,10 @@ The hook refreshes the label every second while running and when the app returns
 
 ## Libraries (Dependencies)
 
-| Library                                                                                                  | Purpose                                                      |
-| -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| [@react-native-async-storage/async-storage](https://github.com/react-native-async-storage/async-storage) | Persisting timer state across app backgrounding and relaunch |
-| [date-fns](https://date-fns.org/)                                                                        | Date/time formatting and manipulation for the timer display  |
+| Library                                                   | Purpose                                                                 |
+| --------------------------------------------------------- | ----------------------------------------------------------------------- |
+| [expo-secure-store](https://docs.expo.dev/versions/latest/sdk/securestore/) | Encrypted key/value storage — persists timer state across background, relaunch, and force quit |
+| [date-fns](https://date-fns.org/)                         | Date/time formatting and manipulation for the timer display             |
 
 ## Get started
 

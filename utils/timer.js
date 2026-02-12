@@ -1,10 +1,10 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { differenceInSeconds } from "date-fns";
+import storage from "./storage";
 
 const recordStartTime = async () => {
   try {
     const now = new Date();
-    await AsyncStorage.setItem("@start_time", now.toISOString());
+    await storage.setValue(storage.keys.startTime, now.toISOString());
   } catch (error) {
     console.warn(error);
   }
@@ -12,7 +12,7 @@ const recordStartTime = async () => {
 
 const clearStartTime = async () => {
   try {
-    await AsyncStorage.removeItem("@start_time");
+    await storage.removeValue(storage.keys.startTime);
   } catch (error) {
     console.warn(error);
   }
@@ -20,7 +20,8 @@ const clearStartTime = async () => {
 
 const getElapsedTime = async () => {
   try {
-    const startTime = await AsyncStorage.getItem("@start_time");
+    const startTime = await storage.getValue(storage.keys.startTime);
+    if (!startTime) return 0;
     const now = new Date();
     return differenceInSeconds(now, Date.parse(startTime));
   } catch (error) {
