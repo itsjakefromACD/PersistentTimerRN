@@ -8,14 +8,14 @@ import {
 } from "@/utils/timer";
 
 export function usePersistentTimer() {
-  const [formattedLabel, setFormattedLabel] = useState("00:00:00");
+  const [formattedTimeLabel, setFormattedTimeLabel] = useState("00:00:00");
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef(null);
   const appStateRef = useRef(AppState.currentState);
 
   const refreshLabel = async () => {
     const label = await getFormattedElapsedTime();
-    setFormattedLabel(label);
+    setFormattedTimeLabel(label);
   };
 
   const start = async () => {
@@ -26,7 +26,7 @@ export function usePersistentTimer() {
   const stop = async () => {
     await clearStartTime();
     setIsRunning(false);
-    setFormattedLabel("00:00:00");
+    setFormattedTimeLabel("00:00:00");
   };
 
   useEffect(() => {
@@ -52,5 +52,5 @@ export function usePersistentTimer() {
     return () => subscription.remove();
   }, []);
 
-  return { formattedLabel, isRunning, start, stop };
+  return { formattedTimeLabel, isRunning, start, stop };
 }

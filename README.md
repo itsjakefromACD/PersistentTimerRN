@@ -60,7 +60,7 @@ A React hook that handles all timer behavior for you: start/stop, live updates e
 
 | Property         | Type       | Description                                                      |
 | ---------------- | ---------- | ---------------------------------------------------------------- |
-| `formattedLabel` | `string`   | The elapsed time as `"HH:MM:SS"` — put this directly in your UI. |
+| `formattedTimeLabel` | `string`   | The elapsed time as `"HH:MM:SS"` — put this directly in your UI. |
 | `isRunning`      | `boolean`  | `true` when the timer is running, `false` when stopped.          |
 | `start`          | `function` | Call to start the timer.                                         |
 | `stop`           | `function` | Call to stop the timer and reset the display.                    |
@@ -71,11 +71,11 @@ A React hook that handles all timer behavior for you: start/stop, live updates e
 import { usePersistentTimer } from "@/hooks/usePersistentTimer";
 
 function MyScreen() {
-  const { formattedLabel, isRunning, start, stop } = usePersistentTimer();
+  const { formattedTimeLabel, isRunning, start, stop } = usePersistentTimer();
 
   return (
     <>
-      <Text>{formattedLabel}</Text>
+      <Text>{formattedTimeLabel}</Text>
       <Button
         title={isRunning ? "Stop" : "Start"}
         onPress={() => (isRunning ? stop() : start())}

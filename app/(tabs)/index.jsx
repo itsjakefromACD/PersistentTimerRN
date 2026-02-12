@@ -9,7 +9,7 @@ import { ThemedView } from "@/components/themed-view";
 import { usePersistentTimer } from "@/hooks/usePersistentTimer";
 
 export default function HomeScreen() {
-  const { formattedLabel, isRunning, start, stop } = usePersistentTimer();
+  const { formattedTimeLabel, isRunning, start, stop } = usePersistentTimer();
 
   const handlePress = () => {
     if (isRunning) stop();
@@ -37,7 +37,7 @@ export default function HomeScreen() {
             title={isRunning ? "Stop" : "Start"}
             onPress={handlePress}
           />
-          <ThemedText type="subtitle">{formattedLabel}</ThemedText>
+          <ThemedText type="subtitle">{formattedTimeLabel}</ThemedText>
         </ThemedView>
       </ThemedView>
     </ParallaxScrollView>
