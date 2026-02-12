@@ -6,10 +6,10 @@ import { HelloWave } from "@/components/hello-wave";
 import ParallaxScrollView from "@/components/parallax-scroll-view";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { usePersistentTimer } from "@/hooks/usePersistentTimer";
+import { useTimer } from "@/hooks/useTimer";
 
 export default function HomeScreen() {
-  const { formattedTimeLabel, isRunning, start, stop } = usePersistentTimer();
+  const { formattedTimeLabel, isRunning, start, stop } = useTimer();
 
   const handlePress = () => {
     if (isRunning) stop();

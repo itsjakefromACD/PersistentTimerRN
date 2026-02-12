@@ -7,7 +7,7 @@ import {
   recordStartTime,
 } from "@/utils/timer";
 
-export function usePersistentTimer() {
+export function useTimer() {
   const [formattedTimeLabel, setFormattedTimeLabel] = useState("00:00:00");
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef(null);

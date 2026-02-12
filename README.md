@@ -52,7 +52,7 @@ await clearStartTime();
 
 ---
 
-### usePersistentTimer hook (`hooks/usePersistentTimer.js`)
+### useTimer hook (`hooks/useTimer.js`)
 
 A React hook that handles all timer behavior for you: start/stop, live updates every second, and refreshing when the app comes back from the background.
 
@@ -68,10 +68,10 @@ A React hook that handles all timer behavior for you: start/stop, live updates e
 **Usage example:**
 
 ```jsx
-import { usePersistentTimer } from "@/hooks/usePersistentTimer";
+import { useTimer } from "@/hooks/useTimer";
 
 function MyScreen() {
-  const { formattedTimeLabel, isRunning, start, stop } = usePersistentTimer();
+  const { formattedTimeLabel, isRunning, start, stop } = useTimer();
 
   return (
     <>
