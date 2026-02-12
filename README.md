@@ -13,6 +13,82 @@ The timer is designed to survive:
 
 Time state is persisted so that the app can compute the current value from the stored start time (or remaining duration) and the current time, even after the process was suspended or killed.
 
+## Timer API
+
+The timer logic lives in two places: a **utility module** with pure functions, and a **React hook** that wires everything up for you.
+
+---
+
+### Timer utility (`utils/timer.js`)
+
+Low-level functions for storing, reading, and formatting elapsed time. No React — use these directly if you're building your own UI or integrating into a different framework.
+
+| Function                       | What it does                                                                                                          |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| `recordStartTime()`            | Saves the current time as the timer start. Call this when the user taps Start.                                        |
+| `clearStartTime()`             | Removes the stored start time. Call this when the user taps Stop.                                                     |
+| `getElapsedTime()`             | Returns how many **seconds** have passed since the timer started. Returns `0` if no start time is stored or on error. |
+| `formatDuration(totalSeconds)` | Converts a number of seconds into a display string like `"01:23:45"` (hours:minutes:seconds).                         |
+| `getFormattedElapsedTime()`    | Same as `getElapsedTime` + `formatDuration` in one call. Returns a string like `"01:23:45"`.                          |
+
+**Quick example (without the hook):**
+
+```javascript
+import {
+  recordStartTime,
+  getFormattedElapsedTime,
+  clearStartTime,
+} from "@/utils/timer";
+
+// User taps Start
+await recordStartTime();
+
+// Show current elapsed time
+const label = await getFormattedElapsedTime(); // "00:01:30"
+
+// User taps Stop
+await clearStartTime();
+```
+
+---
+
+### usePersistentTimer hook (`hooks/usePersistentTimer.js`)
+
+A React hook that handles all timer behavior for you: start/stop, live updates every second, and refreshing when the app comes back from the background.
+
+**Returns:**
+
+| Property         | Type       | Description                                                      |
+| ---------------- | ---------- | ---------------------------------------------------------------- |
+| `formattedLabel` | `string`   | The elapsed time as `"HH:MM:SS"` — put this directly in your UI. |
+| `isRunning`      | `boolean`  | `true` when the timer is running, `false` when stopped.          |
+| `start`          | `function` | Call to start the timer.                                         |
+| `stop`           | `function` | Call to stop the timer and reset the display.                    |
+
+**Usage example:**
+
+```jsx
+import { usePersistentTimer } from "@/hooks/usePersistentTimer";
+
+function MyScreen() {
+  const { formattedLabel, isRunning, start, stop } = usePersistentTimer();
+
+  return (
+    <>
+      <Text>{formattedLabel}</Text>
+      <Button
+        title={isRunning ? "Stop" : "Start"}
+        onPress={() => (isRunning ? stop() : start())}
+      />
+    </>
+  );
+}
+```
+
+The hook refreshes the label every second while running and when the app returns from the background, so the displayed time is always correct.
+
+---
+
 ## Libraries
 
 | Library                                                                                                  | Purpose                                                      |
