@@ -58,12 +58,12 @@ A React hook that handles all timer behavior for you: start/stop, live updates e
 
 **Returns:**
 
-| Property         | Type       | Description                                                      |
-| ---------------- | ---------- | ---------------------------------------------------------------- |
+| Property             | Type       | Description                                                      |
+| -------------------- | ---------- | ---------------------------------------------------------------- |
 | `formattedTimeLabel` | `string`   | The elapsed time as `"HH:MM:SS"` — put this directly in your UI. |
-| `isRunning`      | `boolean`  | `true` when the timer is running, `false` when stopped.          |
-| `start`          | `function` | Call to start the timer.                                         |
-| `stop`           | `function` | Call to stop the timer and reset the display.                    |
+| `isRunning`          | `boolean`  | `true` when the timer is running, `false` when stopped.          |
+| `start`              | `function` | Call to start the timer.                                         |
+| `stop`               | `function` | Call to stop the timer and reset the display.                    |
 
 **Usage example:**
 
@@ -89,7 +89,7 @@ The hook refreshes the label every second while running and when the app returns
 
 ---
 
-## Libraries
+## Libraries (Dependencies)
 
 | Library                                                                                                  | Purpose                                                      |
 | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
