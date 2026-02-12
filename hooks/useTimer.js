@@ -1,33 +1,46 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState } from "react-native";
 
 import {
   clearStartTime,
   getFormattedElapsedTime,
+  hasStartTime,
   recordStartTime,
 } from "@/utils/timer";
 
+/**
+ * Hook containing all timer logic: state, persistence, interval, and AppState handling.
+ * Used by TimerProvider to supply shared timer state via context.
+ */
 export function useTimer() {
   const [formattedTimeLabel, setFormattedTimeLabel] = useState("00:00:00");
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef(null);
   const appStateRef = useRef(AppState.currentState);
 
-  const refreshLabel = async () => {
+  const refreshLabel = useCallback(async () => {
     const label = await getFormattedElapsedTime();
     setFormattedTimeLabel(label);
-  };
+  }, []);
 
-  const start = async () => {
+  const start = useCallback(async () => {
     await recordStartTime();
     setIsRunning(true);
-  };
+  }, []);
 
-  const stop = async () => {
+  const stop = useCallback(async () => {
     await clearStartTime();
     setIsRunning(false);
     setFormattedTimeLabel("00:00:00");
-  };
+  }, []);
+
+  useEffect(() => {
+    const initTimer = async () => {
+      const stored = await hasStartTime();
+      if (stored) setIsRunning(true);
+    };
+    initTimer();
+  }, []);
 
   useEffect(() => {
     if (!isRunning) return;
@@ -37,7 +50,7 @@ export function useTimer() {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [isRunning]);
+  }, [isRunning, refreshLabel]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener("change", (nextAppState) => {
@@ -50,7 +63,7 @@ export function useTimer() {
       appStateRef.current = nextAppState;
     });
     return () => subscription.remove();
-  }, []);
+  }, [refreshLabel]);
 
   return { formattedTimeLabel, isRunning, start, stop };
 }

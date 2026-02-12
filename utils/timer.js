@@ -18,6 +18,11 @@ const clearStartTime = async () => {
   }
 };
 
+const hasStartTime = async () => {
+  const startTime = await storage.getValue(storage.keys.startTime);
+  return startTime != null;
+};
+
 const getElapsedTime = async () => {
   try {
     const startTime = await storage.getValue(storage.keys.startTime);
@@ -40,7 +45,7 @@ const formatDuration = (totalSeconds) => {
 
   return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
     2,
-    "0"
+    "0",
   )}:${String(secs).padStart(2, "0")}`;
 };
 
@@ -54,5 +59,6 @@ export {
   formatDuration,
   getElapsedTime,
   getFormattedElapsedTime,
+  hasStartTime,
   recordStartTime,
 };

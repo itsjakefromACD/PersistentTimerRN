@@ -16,7 +16,7 @@ Time state is persisted via **Secure Store** (encrypted on-device storage) so th
 
 ## Timer API
 
-The timer logic lives in three layers: a **storage utility** (Secure Store), a **timer utility** with pure functions, and a **React hook** that wires everything up for you.
+The timer logic lives in four layers: a **storage utility** (Secure Store), a **timer utility** with pure functions, the **useTimer hook** (all behavior: state, persistence, interval, AppState), and **TimerContext** (provider that uses the hook and shares its value across the app).
 
 ---
 
@@ -66,9 +66,9 @@ await clearStartTime();
 
 ---
 
-### useTimer hook (`hooks/useTimer.js`)
+### TimerContext (`contexts/TimerContext.jsx`) + useTimer hook (`hooks/useTimer.js`)
 
-A React hook that handles all timer behavior for you: start/stop, live updates every second, and refreshing when the app comes back from the background.
+The **hook** holds all timer logic: state, persistence (via the timer utils), interval, AppState handling, and init-from-Secure-Store. The **Context** simply wraps the app and provides the hook’s return value to the tree — `TimerProvider` calls `useTimer` and supplies it via context so any component can consume it with `useTimer()` from the context.
 
 **Returns:**
 
@@ -82,7 +82,7 @@ A React hook that handles all timer behavior for you: start/stop, live updates e
 **Usage example:**
 
 ```jsx
-import { useTimer } from "@/hooks/useTimer";
+import { useTimer } from "@/contexts/TimerContext";
 
 function MyScreen() {
   const { formattedTimeLabel, isRunning, start, stop } = useTimer();
@@ -99,7 +99,7 @@ function MyScreen() {
 }
 ```
 
-The hook refreshes the label every second while running and when the app returns from the background, so the displayed time is always correct.
+The hook checks Secure Store on mount and restores `isRunning` if a start time exists. The label refreshes every second while running and when the app returns from the background, so the displayed time is always correct.
 
 ---
 
